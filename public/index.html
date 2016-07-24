@@ -17,10 +17,10 @@
         <tr>
           <th>Name</th>
           <th>State</th>
-          <th>CPUUsage</th>
-          <th>MemoryAssigned</th>
+          <th>Operate</th>
+          <th>CPU</th>
+          <th>Memory</th>
           <th>Uptime</th>
-          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -36,18 +36,35 @@
             {{else}}
               <td><span class="secondary label">{{.StateDesc}}</span></td>
             {{end}}
+            <td>
+                {{if .IsRunning}}
+                  <form method="POST" action="/suspend" style="display: inline;">
+                      <button type="submit" class="catro button" name="vmName" value="{{.Name}}">Suspend</button>
+                  </form>
+                  <form method="POST" action="/save" style="display: inline;">
+                      <button type="submit" class="catro button" name="vmName" value="{{.Name}}">Save</button>
+                  </form>
+                {{else}}
+                    {{if .IsSuspended}}
+                      <form method="POST" action="/resume" style="display: inline;">
+                          <button type="submit" class="catro button" name="vmName" value="{{.Name}}">Resume</button>
+                      </form>
+                      <form method="POST" action="/start" style="display: inline;">
+                          <button type="submit" class="catro button" disabled>Start</button>
+                      </form>
+                    {{else}}
+                      <form method="POST" action="/resume" style="display: inline;">
+                          <button type="submit" class="catro button" disabled>Resume</button>
+                      </form>
+                      <form method="POST" action="/start" style="display: inline;">
+                          <button type="submit" class="catro button" name="vmName" value="{{.Name}}">Start</button>
+                      </form>
+                    {{end}}
+                {{end}}
+            </td>
             <td>{{.CPUUsage}}%</td>
             <td>{{.MemoryAssigned}}MB</td>
             <td>{{.HHMMSS}}</td>
-            <td>
-              <form method="POST" action="/startvm">
-                {{if .IsRunning}}
-                  <button class="button" disabled>Start</button>
-                {{else}}
-                  <button type="submit" class="button" onclick="return check(this.value)" name="vmName" value="{{.Name}}">Start</button>
-                {{end}}
-              </form>
-            </td>
           </tr>
         {{end}}
       </tbody>
